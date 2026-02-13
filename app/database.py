@@ -28,3 +28,7 @@ engine = create_engine(
     _db_url(),
     connect_args={"check_same_thread": False}  # needed for SQLite + FastAPI/TestClient
 )
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
