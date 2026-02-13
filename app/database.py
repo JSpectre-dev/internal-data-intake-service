@@ -18,7 +18,7 @@ def _db_url() -> str:
 # Allow override for tests / different environments
    db_path = os.getenv("INTAKE_DB_PATH")
    if db_path:
-       p = Path(db_path).expanduser().resolve() # Type annotations for p are unnecessary. p is clearly inferred as a Path, both branches assign a path, and type inference handles it cleanly. 
+       p = Path(db_path).expanduser().resolve()
    else:
        p = DEFAULT_DB_PATH
    return f"sqlite:///{p}"
