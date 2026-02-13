@@ -38,7 +38,7 @@ def get_db():
         db.close()
 
 @app.get("/health")
-def health_check():
+def health_check() -> dict:
     """
     Health check endpoint used for simple liveness verification.
     """
