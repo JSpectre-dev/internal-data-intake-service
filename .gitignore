@@ -1,3 +1,5 @@
 /.venv
 /app/__pycache__
 .python-version
+/app.db
+/tests/__pycache__
