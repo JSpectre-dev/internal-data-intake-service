@@ -9,12 +9,31 @@ This repository contains a minimal, structured implementation of an internal dat
 It implements:
 
 - Clean project structure
-- RESTful API endpoints
+- RESTful API design
 - Request validation using Pydantic
 - Relational persistence using SQLAlchemy
 - Clear separation between API, domain models, and data access logic
+- Basic integration testing using pytest
 
-The current scope is intentionally limited to a focused, reviewable vertical slice of a backend service, with clear extension points for future enhancements.
+The current scope is intentionally limited to a focused, reviewable vertical slice of a backend service.
+
+---
+
+## Architecture
+
+```text
+HTTP (FastAPI)
+    ↓
+Schemas (Pydantic)
+    ↓
+Repository Layer
+    ↓
+SQLAlchemy ORM
+    ↓
+SQLite
+```
+
+The repository layer isolates database access from HTTP handling to maintain separation of concerns and testability.
 
 ---
 
@@ -29,29 +48,92 @@ app/
     submissions_repository.py # Data access layer
 
 tests/
-    test_submissions.py # Basic API tests
+    test_submissions.py # API integration tests
 ```
 
 ---
 
-## Current Features
+## API Endpoints
 
-- SQLite database configuration
-- SQLAlchemy ORM model definitions
-- Environment-based database configuration
-- FastAPI application initialization
+The following endpoints are implemented in app/main.py.
 
-Endpoints are being implemented incrementally.
+---
+
+### GET `/health`
+
+Health check endpoint.
+
+Example request:
+
+```http
+GET /health
+```
+
+Example response:
+
+```json
+{
+  "status": "ok"
+}
+```
+
+---
+
+### POST `/submissions`
+
+Creates a new submission record.
+
+Example request body:
+
+```json
+{
+  "payload": { "hello": "world", "n": 123 },
+  "source": "manual"
+}
+```
+
+Example response:
+
+```json
+{
+  "id": 1
+}
+```
+
+---
+
+### GET `/submissions/{id}`
+
+Retrieves a submission by ID.
+
+Example request:
+
+```http
+GET /submissions/1
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "payload": { "hello": "world", "n": 123 },
+  "source": "manual",
+  "created_at": "2024-01-01T12:00:00"
+}
+```
 
 ---
 
 ## Running Locally
 
+### 1. Create virtual environment
+
 ```bash
 python -m venv .venv
 ```
 
-Activate the virtual environment:
+Activate:
 
 **Windows**
 
@@ -64,22 +146,104 @@ Activate the virtual environment:
 ```bash
 source .venv/bin/activate
 ```
-Install dependencies and run the application:
+
+---
+
+### 2. Install dependencies
 
 ```bash
 pip install -r requirements.txt
+```
+
+---
+
+### 3. Start the server
+
+```bash
 uvicorn app.main:app --reload
 ```
 
+Open:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+to use the interactive Swagger UI.
+
+---
+
+## Example Usage
+
+The following examples assume the service is running at:
+
+```text
+http://127.0.0.1:8000
+```
+
+> Note: Output formatting may vary depending on the HTTP client.
+> Some clients (e.g., curl) display raw JSON, while others (e.g., PowerShell `Invoke-RestMethod`) automatically parse and format the response.
+
+---
+
+### Using curl (Linux / macOS / Git Bash)
+
+Create submission:
+
+```bash
+curl -X POST http://127.0.0.1:8000/submissions \
+  -H "Content-Type: application/json" \
+  -d '{"payload":{"hello":"world","n":123},"source":"manual"}'
+```
+
+Fetch submission:
+
+```bash
+curl http://127.0.0.1:8000/submissions/1
+```
+
+---
+
+### Using PowerShell (Windows-native)
+
+Create submission:
+
+```powershell
+Invoke-RestMethod `
+  -Method Post `
+  -Uri "http://127.0.0.1:8000/submissions" `
+  -ContentType "application/json" `
+  -Body '{"payload":{"hello":"world","n":123},"source":"manual"}'
+```
+
+Fetch submission:
+
+```powershell
+Invoke-RestMethod `
+  -Method Get `
+  -Uri "http://127.0.0.1:8000/submissions/1"
+```
+
+---
+
 ## Testing
+
+Run integration tests:
+
 ```bash
 pytest -q
 ```
 
-## Design Notes
+Tests use a temporary SQLite database via the INTAKE_DB_PATH environment variable to ensure isolation.
 
-* Database configuration is environment-driven (via INTAKE_DB_PATH).
+## Design Considerations
 
-* SQLite is used for simplicity and portability.
+- Database configuration is environment-driven (via INTAKE_DB_PATH).
 
-* The structure is intentionally modular to support future extensions.
+- Repository layer isolates persistence logic
+
+- ORM models define relational schema explicitly
+
+- API contracts are defined with Pydantic schemas
+  
+- Tables are initialized on startup for simplicity (migration tooling would be used in larger systems)
