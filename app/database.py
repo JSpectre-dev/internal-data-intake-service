@@ -23,3 +23,8 @@ def _db_url() -> str:
    else:
        p = DEFAULT_DB_PATH
    return f"sqlite:///{p}"
+
+engine = create_engine(
+    _db_url(),
+    connect_args={"check_same_thread": False}  # needed for SQLite + FastAPI/TestClient
+)
