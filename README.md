@@ -1,5 +1,7 @@
 # Internal Data Intake Service
 
+![Python](https://img.shields.io/badge/python-3.11.5-3776AB?logo=python&logoColor=white)
+
 ## Overview
 
 This repository contains a minimal, structured implementation of an internal data intake service built with FastAPI and SQLAlchemy, using SQLite as the backing database.
