@@ -60,5 +60,5 @@ def get_submission(db: Session, submission_id: int) -> Optional[dict]:
         "id": int(row.id),
         "payload": json.loads(row.payload_json),
         "source": row.source,
-        "created at": row.created_at.isoformat(),
+        "created_at": row.created_at.isoformat(),
     }
