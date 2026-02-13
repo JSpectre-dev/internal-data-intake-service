@@ -31,11 +31,13 @@ def create_submission(db: Session, payload: Dict[str, Any], source: Optional[str
     Returns:
         The newly created submission ID.
     """
-    
-    row = Submission(payload_json=json.dumps(payload, separators=(',', ','), ensure_ascii=False), source=source)
+    payload_json = json.dumps(payload, separators=(",", ":"), ensure_ascii=False)
+
+    row = Submission(payload_json=payload_json, source=source)
     db.add(row)
     db.commit()
     db.refresh(row)
+    
     return int(row.id) 
 
 def get_submission(db: Session, submission_id: int) -> Optional[dict]:
