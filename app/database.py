@@ -1,7 +1,6 @@
 
 # app/database.py
 # Author: Jordan Casper
-# File: database.py
 
 from __future__ import annotations
 
