@@ -3,3 +3,4 @@
 .python-version
 /app.db
 /tests/__pycache__
+*.pyc
