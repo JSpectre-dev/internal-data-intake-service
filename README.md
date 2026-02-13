@@ -1,6 +1,7 @@
 # Internal Data Intake Service
 
 ## Overview
+
 This repository contains a minimal, structured implementation of an internal data intake service built with FastAPI and SQLAlchemy, using SQLite as the backing database.
 
 It implements:
