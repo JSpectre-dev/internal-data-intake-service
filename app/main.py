@@ -21,6 +21,13 @@ app = FastAPI(title= "Internal Data Intake Service")
 # Initialize database schema
 Base.metadata.create_all(bind=engine)
 
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
