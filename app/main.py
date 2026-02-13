@@ -31,3 +31,9 @@ def get_db():
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+@app.post("/submissions", status_code=status.HTTP_201_CREATED, tags=["submissions"])
+def create_submission_endpoint(req: SubmissionCreate, db: Session = Depends(get_db)) -> dict:
+    new_id = create_submission(db=db, payload=req.payload, source=req.source)
+    return {"id": new_id}
+
