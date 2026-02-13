@@ -18,6 +18,9 @@ from .submissions_repository import create_submission, get_submission
 
 app = FastAPI(title= "Internal Data Intake Service")
 
+# Initialize database schema
+Base.metadata.create_all(bind=engine)
+
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
