@@ -37,3 +37,9 @@ def create_submission_endpoint(req: SubmissionCreate, db: Session = Depends(get_
     new_id = create_submission(db=db, payload=req.payload, source=req.source)
     return {"id": new_id}
 
+@app.get("/submissions/{submission_id}", response_model=SubmissionOut, tags=["submissions"])
+def get_submission_endpoint(submission_id: int, db: Session = Depends(get_db)) -> SubmissionOut:
+    result = get_submission(db=db, submission_id=submission_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    return SubmissionOut(**result)
