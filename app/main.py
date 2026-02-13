@@ -4,11 +4,17 @@ Internal Data Intake Service.
 This module defines the FastAPI application responsible for receiving
 and validating internal data submissions.
 """
+# app/main.py
 # Author: Jordan Casper
-# File: main.py
 
-import uvicorn
-from fastapi import FastAPI
+from __future__ import annotations
+
+from fastapi import FastAPI, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
+from .database import SessionLocal, engine, Base
+from .schemas import SubmissionCreate, SubmissionOut
+from .submissions_repository import create_submission, get_submission
 
 app = FastAPI(title= "Internal Data Intake Service")
 
